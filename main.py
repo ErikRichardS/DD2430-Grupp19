@@ -11,7 +11,7 @@ import numpy as np
 
 
 from ann import *
-
+from data_manager import *
 
 
 
@@ -32,8 +32,8 @@ learning_decay = 0.9
 
 
 
-net = None # The NN
-trn_dataset = None # Training data
+net = CNN()
+trn_dataset = get_training_data()
 vld_dataset = None # Validation data
 
 
@@ -41,7 +41,7 @@ vld_dataset = None # Validation data
 
 # Loaders handle shufflings and splitting data into batches
 trn_loader = torch.utils.data.DataLoader(trn_dataset, batch_size=batch_size, shuffle=True)
-vld_loader = torch.utils.data.DataLoader(vld_dataset, batch_size=batch_size)
+#vld_loader = torch.utils.data.DataLoader(vld_dataset, batch_size=batch_size)
 
 
 # Criterion calculates the error/loss of the output
@@ -62,9 +62,17 @@ for epoch in range(num_epochs):
 		data = data.cuda()
 		labels = labels.cuda()
 
+
+
 		# Forward + Backward + Optimize
 		optimizer.zero_grad()
 		outputs = net(data)
+
+		#print(data.shape)
+		#print(outputs.shape)
+		#print(labels.shape)
+		#print("-------------------")
+
 		loss = criterion(outputs, labels)
 		loss.backward()
 		optimizer.step()
