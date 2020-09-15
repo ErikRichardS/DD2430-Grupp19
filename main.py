@@ -81,3 +81,5 @@ for epoch in range(num_epochs):
 
 	t2 = time()
 	print("Epoch time : %0.3f m \t Loss : %0.3f" % ( (t2-t1)/60 , loss_sum ))
+
+	torch.save(net, "skeleton_net.pt")
