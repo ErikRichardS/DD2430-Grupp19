@@ -11,7 +11,7 @@ from PIL import Image
 img_size = 128
 
 transform = transforms.Compose([
-	transforms.Resize((img_size,img_size)),
+	#transforms.Resize((img_size,img_size)),
 	transforms.ToTensor()
 ])
 

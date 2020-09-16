@@ -32,8 +32,8 @@ learning_decay = 0.9
 
 
 
-net = CNN()
-trn_dataset = get_training_data()
+net = U_Net()
+trn_dataset = get_training_data() # Training data
 vld_dataset = None # Validation data
 
 
@@ -46,9 +46,8 @@ trn_loader = torch.utils.data.DataLoader(trn_dataset, batch_size=batch_size, shu
 
 # Criterion calculates the error/loss of the output
 # Optimizer does the backprop to adjust the weights of the NN
-criterion = nn.BCEWithLogitsLoss( ) # pos_weight = torch.tensor(WEIGHTS).cuda() )
-optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate) # , weight_decay=wt_decay)
-
+criterion = nn.BCEWithLogitsLoss()
+optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate) 
 
 
 
