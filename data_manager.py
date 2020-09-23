@@ -6,14 +6,17 @@ import torchvision.transforms.functional as F
 
 import os
 from PIL import Image
+import random
 
 
-img_size = 128
+img_size = 256
 
-transform = transforms.Compose([
-	#transforms.Resize((img_size,img_size)),
-	transforms.ToTensor()
-])
+
+
+#transform = transforms.Compose([
+#	transforms.Resize((img_size,img_size)),
+#	transforms.ToTensor()
+#])
 
 
 def get_training_data():
@@ -22,6 +25,37 @@ def get_training_data():
 	dataset = ImageDataset("Data/img_train_shape", "Data/img_train_skeleton")
 
 	return dataset
+
+
+
+
+def get_random_transform(p_padding=0.5, p_vflip = 0.5, p_hflip=0.3):
+	transform_list = []
+
+	padding = random.uniform(0,1) < p_padding
+	vflip = random.uniform(0,1) < p_vflip
+	hflip = random.uniform(0,1) < p_hflip
+
+	def rand_int():
+		return random.randint(1,20)
+
+	#transform_list.append( transforms.Resize((img_size,img_size)) )
+
+	if padding:
+		padding_tuple = ( rand_int(), rand_int(), rand_int(), rand_int() )
+		transform_list.append( transforms.Pad(padding_tuple) )
+		transform_list.append( transforms.CenterCrop(img_size) )
+
+	if vflip:
+		transform_list.append( transforms.functional.vflip )
+
+	if hflip:
+		transform_list.append( transforms.functional.hflip )
+
+	
+	transform_list.append(transforms.ToTensor())
+
+	return transforms.Compose(transform_list)
 
 
 
@@ -37,6 +71,8 @@ class ImageDataset(torch.utils.data.Dataset):
 
 
 	def __getitem__(self, idx):
+		transform = get_random_transform()
+
 		# Load the img and turn it into a Torch tensor matrix
 		link = self.trn_dir+"/"+self.file_list[idx]
 		data = transform( Image.open(link) )
