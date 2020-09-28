@@ -46,74 +46,90 @@ class U_Net(nn.Module):
 		super(U_Net, self).__init__()
 		self.encoder1 = nn.Sequential(
 			nn.Conv2d(1, 32, kernel_size=3, padding=1),
-			nn.BatchNorm2d(32),
+			#nn.BatchNorm2d(32),
 			nn.Conv2d(32, 32, kernel_size=3, padding=1),
-			nn.BatchNorm2d(32),
+			nn.Conv2d(1, 32, kernel_size=3, padding=1),
+			nn.Conv2d(32, 32, kernel_size=3, padding=1),
+			nn.Conv2d(1, 32, kernel_size=3, padding=1),
 		)
 
 		self.encoder2 = nn.Sequential(
 			nn.MaxPool2d(kernel_size=2, stride=2),
 			nn.Conv2d(32, 64, kernel_size=3, padding=1),
-			nn.BatchNorm2d(64),
+			#nn.BatchNorm2d(64),
 			nn.Conv2d(64, 64, kernel_size=3, padding=1),
-			nn.BatchNorm2d(64),
+			nn.Conv2d(64, 64, kernel_size=3, padding=1),
+			nn.Conv2d(64, 64, kernel_size=3, padding=1),
+			nn.Conv2d(64, 64, kernel_size=3, padding=1),
 		)
 
 		self.encoder3 = nn.Sequential(
 			nn.MaxPool2d(kernel_size=2, stride=2),
 			nn.Conv2d(64, 128, kernel_size=3, padding=1),
-			nn.BatchNorm2d(128),
+			#nn.BatchNorm2d(128),
 			nn.Conv2d(128, 128, kernel_size=3, padding=1),
-			nn.BatchNorm2d(128),
+			nn.Conv2d(128, 128, kernel_size=3, padding=1),
+			nn.Conv2d(128, 128, kernel_size=3, padding=1),
+			nn.Conv2d(128, 128, kernel_size=3, padding=1),
 		)
 
 		self.encoder4 = nn.Sequential(
 			nn.MaxPool2d(kernel_size=2, stride=2),
 			nn.Conv2d(128, 256, kernel_size=3, padding=1),
-			nn.BatchNorm2d(256),
+			#nn.BatchNorm2d(256),
 			nn.Conv2d(256, 256, kernel_size=3, padding=1),
-			nn.BatchNorm2d(256),
+			nn.Conv2d(256, 256, kernel_size=3, padding=1),
+			nn.Conv2d(256, 256, kernel_size=3, padding=1),
+			nn.Conv2d(256, 256, kernel_size=3, padding=1),
 		)
 
 		self.encoder5 = nn.Sequential(
 			nn.MaxPool2d(kernel_size=2, stride=2),
 			nn.Conv2d(256, 512, kernel_size=3, padding=1),
-			nn.BatchNorm2d(512),
+			#nn.BatchNorm2d(512),
 			nn.Conv2d(512, 512, kernel_size=3, padding=1),
-			nn.BatchNorm2d(512),
+			nn.Conv2d(512, 512, kernel_size=3, padding=1),
+			nn.Conv2d(512, 512, kernel_size=3, padding=1),
+			nn.Conv2d(512, 512, kernel_size=3, padding=1),
 		)
 
 		self.bottleneck= nn.Sequential(
 			nn.MaxPool2d(kernel_size=2, stride=2),
-			nn.Conv2d(512, 1024, kernel_size=3, padding=1),
-			nn.BatchNorm2d(1024),
-			nn.Conv2d(1024, 1024, kernel_size=3, padding=1),
-			nn.BatchNorm2d(1024),
+			nn.Conv2d(512, 1024, kernel_size=1),
+			nn.ReLU(),
+			nn.Conv2d(1024, 1024, kernel_size=1),
+			nn.ReLU(),
 		)
 
 		
 		self.decoder1 = nn.Sequential(
 			nn.Upsample( scale_factor=(2, 2) ),
 			nn.Conv2d(1024, 512, kernel_size=3, padding=1),
-			nn.BatchNorm2d(512),
+			#nn.BatchNorm2d(512),
 			nn.Conv2d(512, 512, kernel_size=3, padding=1),
-			nn.BatchNorm2d(512),
+			nn.Conv2d(512, 512, kernel_size=3, padding=1),
+			nn.Conv2d(512, 512, kernel_size=3, padding=1),
+			nn.Conv2d(512, 512, kernel_size=3, padding=1),
 		)
 
 		self.decoder2 = nn.Sequential(
 			nn.Upsample( scale_factor=(2, 2) ),
 			nn.Conv2d(512, 256, kernel_size=3, padding=1),
-			nn.BatchNorm2d(256),
+			#nn.BatchNorm2d(256),
 			nn.Conv2d(256, 256, kernel_size=3, padding=1),
-			nn.BatchNorm2d(256),
+			nn.Conv2d(256, 256, kernel_size=3, padding=1),
+			nn.Conv2d(256, 256, kernel_size=3, padding=1),
+			nn.Conv2d(256, 256, kernel_size=3, padding=1),
 		)
 
 		self.decoder3 = nn.Sequential(
 			nn.Upsample( scale_factor=(2, 2) ),
 			nn.Conv2d(256, 128, kernel_size=3, padding=1),
-			nn.BatchNorm2d(128),
+			#nn.BatchNorm2d(128),
 			nn.Conv2d(128, 128, kernel_size=3, padding=1),
-			nn.BatchNorm2d(128),
+			nn.Conv2d(128, 128, kernel_size=3, padding=1),
+			nn.Conv2d(128, 128, kernel_size=3, padding=1),
+			nn.Conv2d(128, 128, kernel_size=3, padding=1),
 		)
 
 		self.decoder4 = nn.Sequential(
@@ -121,13 +137,18 @@ class U_Net(nn.Module):
 			nn.Conv2d(128, 64, kernel_size=3, padding=1),
 			nn.BatchNorm2d(64),
 			nn.Conv2d(64, 64, kernel_size=3, padding=1),
-			nn.BatchNorm2d(64),
+			nn.Conv2d(64, 64, kernel_size=3, padding=1),
+			nn.Conv2d(64, 64, kernel_size=3, padding=1),
+			nn.Conv2d(64, 64, kernel_size=3, padding=1),
 		)
 
 		self.decoder5 = nn.Sequential(
 			nn.Upsample( scale_factor=(2, 2) ),
 			nn.Conv2d(64, 32, kernel_size=3, padding=1),
-			nn.BatchNorm2d(32),
+			#nn.BatchNorm2d(32),
+			nn.Conv2d(32, 3, kernel_size=3, padding=1),
+			nn.Conv2d(32, 3, kernel_size=3, padding=1),
+			nn.Conv2d(32, 3, kernel_size=3, padding=1),
 			nn.Conv2d(32, 3, kernel_size=3, padding=1),
 			nn.Sigmoid()
 		)
