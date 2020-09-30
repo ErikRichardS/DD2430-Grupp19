@@ -48,9 +48,9 @@ class U_Net(nn.Module):
 			nn.Conv2d(1, 32, kernel_size=3, padding=1),
 			#nn.BatchNorm2d(32),
 			nn.Conv2d(32, 32, kernel_size=3, padding=1),
-			nn.Conv2d(1, 32, kernel_size=3, padding=1),
 			nn.Conv2d(32, 32, kernel_size=3, padding=1),
-			nn.Conv2d(1, 32, kernel_size=3, padding=1),
+			nn.Conv2d(32, 32, kernel_size=3, padding=1),
+			nn.Conv2d(32, 32, kernel_size=3, padding=1),
 		)
 
 		self.encoder2 = nn.Sequential(
@@ -99,56 +99,56 @@ class U_Net(nn.Module):
 			nn.ReLU(),
 			nn.Conv2d(1024, 1024, kernel_size=1),
 			nn.ReLU(),
+			nn.ConvTranspose2d(1024, 512, kernel_size=2, stride=2),
 		)
 
 		
 		self.decoder1 = nn.Sequential(
-			nn.Upsample( scale_factor=(2, 2) ),
 			nn.Conv2d(1024, 512, kernel_size=3, padding=1),
 			#nn.BatchNorm2d(512),
 			nn.Conv2d(512, 512, kernel_size=3, padding=1),
 			nn.Conv2d(512, 512, kernel_size=3, padding=1),
 			nn.Conv2d(512, 512, kernel_size=3, padding=1),
 			nn.Conv2d(512, 512, kernel_size=3, padding=1),
+			nn.ConvTranspose2d(512, 256, kernel_size=2, stride=2),
 		)
 
 		self.decoder2 = nn.Sequential(
-			nn.Upsample( scale_factor=(2, 2) ),
 			nn.Conv2d(512, 256, kernel_size=3, padding=1),
 			#nn.BatchNorm2d(256),
 			nn.Conv2d(256, 256, kernel_size=3, padding=1),
 			nn.Conv2d(256, 256, kernel_size=3, padding=1),
 			nn.Conv2d(256, 256, kernel_size=3, padding=1),
 			nn.Conv2d(256, 256, kernel_size=3, padding=1),
+			nn.ConvTranspose2d(256, 128, kernel_size=2, stride=2),
 		)
 
 		self.decoder3 = nn.Sequential(
-			nn.Upsample( scale_factor=(2, 2) ),
 			nn.Conv2d(256, 128, kernel_size=3, padding=1),
 			#nn.BatchNorm2d(128),
 			nn.Conv2d(128, 128, kernel_size=3, padding=1),
 			nn.Conv2d(128, 128, kernel_size=3, padding=1),
 			nn.Conv2d(128, 128, kernel_size=3, padding=1),
 			nn.Conv2d(128, 128, kernel_size=3, padding=1),
+			nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2),
 		)
 
 		self.decoder4 = nn.Sequential(
-			nn.Upsample( scale_factor=(2, 2) ),
 			nn.Conv2d(128, 64, kernel_size=3, padding=1),
-			nn.BatchNorm2d(64),
+			#nn.BatchNorm2d(64),
 			nn.Conv2d(64, 64, kernel_size=3, padding=1),
 			nn.Conv2d(64, 64, kernel_size=3, padding=1),
 			nn.Conv2d(64, 64, kernel_size=3, padding=1),
 			nn.Conv2d(64, 64, kernel_size=3, padding=1),
+			nn.ConvTranspose2d(64, 32, kernel_size=2, stride=2),
 		)
 
 		self.decoder5 = nn.Sequential(
-			nn.Upsample( scale_factor=(2, 2) ),
 			nn.Conv2d(64, 32, kernel_size=3, padding=1),
 			#nn.BatchNorm2d(32),
-			nn.Conv2d(32, 3, kernel_size=3, padding=1),
-			nn.Conv2d(32, 3, kernel_size=3, padding=1),
-			nn.Conv2d(32, 3, kernel_size=3, padding=1),
+			nn.Conv2d(32, 32, kernel_size=3, padding=1),
+			nn.Conv2d(32, 32, kernel_size=3, padding=1),
+			nn.Conv2d(32, 32, kernel_size=3, padding=1),
 			nn.Conv2d(32, 3, kernel_size=3, padding=1),
 			nn.Sigmoid()
 		)
@@ -166,10 +166,19 @@ class U_Net(nn.Module):
 
 		bot = self.bottleneck(enc5)
 
-		dec1 = self.decoder1(bot)
-		dec2 = self.decoder2(dec1)
-		dec3 = self.decoder3(dec2)
-		dec4 = self.decoder4(dec3)
-		dec5 = self.decoder5(dec4)
+		cat0 = torch.cat( (bot, enc5), dim=1)
+		dec1 = self.decoder1(cat0)
+
+		cat1 = torch.cat( (dec1, enc4), dim=1)
+		dec2 = self.decoder2(cat1)
+
+		cat2 = torch.cat( (dec2, enc3), dim=1)
+		dec3 = self.decoder3(cat2)
+
+		cat3 = torch.cat( (dec3, enc2), dim=1)
+		dec4 = self.decoder4(cat3)
+
+		cat4 = torch.cat( (dec4, enc1), dim=1)
+		dec5 = self.decoder5(cat4)
 
 		return dec5
