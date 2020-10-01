@@ -23,7 +23,7 @@ from data_manager import *
 
 # Hyper Parameters
 num_epochs = 100
-batch_size = 20
+batch_size = 16
 learning_rate = 1e-4
 #weight_decay = 1e-7
 learning_decay = 0.9
@@ -46,7 +46,7 @@ trn_loader = torch.utils.data.DataLoader(trn_dataset, batch_size=batch_size, shu
 
 # Criterion calculates the error/loss of the output
 # Optimizer does the backprop to adjust the weights of the NN
-criterion = nn.BCEWithLogitsLoss()
+criterion = nn.BCELoss()
 optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate) 
 
 
