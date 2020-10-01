@@ -126,7 +126,6 @@ class U_Net(nn.Module):
 			nn.ReLU(),
 			nn.ConvTranspose2d(1024, 512, kernel_size=2, stride=2),
 		)
-
 		
 		self.decoder1 = nn.Sequential(
 			nn.Conv2d(1024, 512, kernel_size=3, padding=1),
@@ -188,7 +187,7 @@ class U_Net(nn.Module):
 			nn.ReLU(),
 			nn.Conv2d(32, 32, kernel_size=3, padding=1),
 			nn.ReLU(),
-			nn.Conv2d(32, 32, kernel_size=3, padding=1),
+			nn.Conv2d(32, 3, kernel_size=3, padding=1),
 			nn.Sigmoid()
 		)
 
