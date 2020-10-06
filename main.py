@@ -11,6 +11,7 @@ import numpy as np
 
 
 from ann import *
+from loss import *
 from data_manager import *
 
 
@@ -46,7 +47,7 @@ trn_loader = torch.utils.data.DataLoader(trn_dataset, batch_size=batch_size, shu
 
 # Criterion calculates the error/loss of the output
 # Optimizer does the backprop to adjust the weights of the NN
-criterion = nn.BCELoss()
+criterion = FocalLoss() # nn.BCELoss()
 optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate) 
 
 
@@ -66,11 +67,6 @@ for epoch in range(num_epochs):
 		# Forward + Backward + Optimize
 		optimizer.zero_grad()
 		outputs = net(data)
-
-		#print(data.shape)
-		#print(outputs.shape)
-		#print(labels.shape)
-		#print("-------------------")
 
 		loss = criterion(outputs, labels)
 		loss.backward()
