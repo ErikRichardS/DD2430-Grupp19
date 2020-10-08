@@ -24,7 +24,7 @@ from data_manager import *
 
 # Hyper Parameters
 num_epochs = 100
-batch_size = 16
+batch_size = 4
 learning_rate = 1e-4
 #weight_decay = 1e-7
 learning_decay = 0.9
