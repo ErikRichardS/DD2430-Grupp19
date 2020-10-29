@@ -29,7 +29,7 @@ def get_training_data():
 
 
 
-def get_random_transform(p_padding=0.5, p_vflip = 0.5, p_hflip=0.5):
+def get_random_transform(p_padding=0.9, p_vflip = 0.5, p_hflip=0.5):
 	transform_list = []
 
 	padding = random.uniform(0,1) < p_padding
