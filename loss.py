@@ -7,7 +7,6 @@ from torch.autograd import Variable
 
 
 def invert(t):
-
     return (t-1)*-1
 
 
@@ -21,12 +20,9 @@ class FocalLoss(nn.Module):
         self.gamma = gamma
 
     def forward(self, input, target):
-
-
        
         p = input*target + invert(input)*invert(target)
 
-        
         pos = -self.w_pos * torch.pow( (1 - p), self.gamma ) * torch.log(p)
         neg = -self.w_neg * torch.pow(    p,    self.gamma ) * torch.log(1 - p)
         loss = pos + neg
