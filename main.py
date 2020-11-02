@@ -30,14 +30,9 @@ learning_rate = 1e-4
 learning_decay = 0.9
 
 
-
-
-
 net = U_Net()
 trn_dataset = get_training_data() # Training data
 vld_dataset = None # Validation data
-
-
 
 
 # Loaders handle shufflings and splitting data into batches
@@ -61,8 +56,6 @@ for epoch in range(num_epochs):
 		# Load data into GPU using cuda
 		data = data.cuda()
 		labels = labels.cuda()
-
-
 
 		# Forward + Backward + Optimize
 		optimizer.zero_grad()

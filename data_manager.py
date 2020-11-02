@@ -72,7 +72,7 @@ class ImageDataset(torch.utils.data.Dataset):
 		self.trn_dir = train_directory
 		self.lbl_dir = label_directory
 		self.file_list = os.listdir( train_directory)
-		self.file_list.remove(".DS_Store")
+		#self.file_list.remove(".DS_Store")
 
 
 	def __getitem__(self, idx):
