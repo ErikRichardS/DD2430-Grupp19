@@ -111,7 +111,6 @@ class U_Net(nn.Module):
 			nn.Sigmoid()
 		)
 
-
 		self.cuda()
 
 	def forward(self, x):

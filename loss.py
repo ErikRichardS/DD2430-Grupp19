@@ -20,14 +20,19 @@ class FocalLoss(nn.Module):
         self.gamma = gamma
 
     def forward(self, p, target):
+
+        p_white = p*target + invert(target)
+
+        p_black = p*invert(target)
+
         # Loss for white pixels
-        positive = -self.w_pos * torch.pow( (1 - p), self.gamma ) * torch.log(p)
-        positive = torch.clamp(positive, 0, 1e10)
+        positive = -self.w_pos * torch.pow( (1 - p_white), self.gamma ) * torch.log(p_white)
+        #positive = torch.clamp(positive, 0, 1e10)
 
         # Loss for negative pixels
-        negative = -self.w_neg * torch.pow(    p,    self.gamma ) * torch.log(1 - p)
-        negative = torch.clamp(negative, 0, 1e10)
+        negative = -self.w_neg * torch.pow(    p_black,    self.gamma ) * torch.log(1 - p_black)
+        #negative = torch.clamp(negative, 0, 1e10)
 
-        loss = (positive*target) + (negative*invert(target))
+        loss = positive + negative
 
         return torch.mean(loss)

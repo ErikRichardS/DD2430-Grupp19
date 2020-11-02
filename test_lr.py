@@ -4,7 +4,7 @@ import torchvision
 import torchvision.datasets as dsets
 import torchvision.transforms as transforms
 from torch.autograd import Variable
-import torchvision.transforms.functional as F
+import torch.nn.functional as F
 
 from time import time
 import numpy as np
@@ -14,7 +14,7 @@ from ann import *
 from loss import *
 from data_manager import *
 from random import uniform
-
+import copy
 
 
 
@@ -22,16 +22,16 @@ from random import uniform
 num_epochs = 5
 batch_size = 4
 
-max_lr = 1e-3
-min_lr = 1e-5
+max_lr = 1e-4
+min_lr = 1e-6
 learning_rate = []
 for i in range(10):
 	learning_rate.append(uniform(min_lr, max_lr))
 
 
 
+net_untrained = U_Net()
 
-net = U_Net()
 trn_dataset = get_training_data() # Training data
 
 
@@ -42,6 +42,9 @@ trn_loader = torch.utils.data.DataLoader(trn_dataset, batch_size=batch_size, shu
 
 for lr in learning_rate:
 	print("testing learning rate: %0.5f" % lr)
+	
+	net = copy.deepcopy(net_untrained)
+
 	# Criterion calculates the error/loss of the output
 	# Optimizer does the backprop to adjust the weights of the NN
 	criterion = FocalLoss() # nn.BCELoss()
@@ -61,11 +64,17 @@ for lr in learning_rate:
 
 			# Forward + Backward + Optimize
 			optimizer.zero_grad()
+			#out = net(data)
+			#outputs = torch.sigmoid(out)
+
 			outputs = net(data)
 
 			loss = criterion(outputs, labels)
 			loss.backward()
 			optimizer.step()
+
+			if torch.isnan(loss):
+				print(out[0])
 
 			loss_sum += loss
 
