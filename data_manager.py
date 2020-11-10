@@ -17,17 +17,17 @@ img_size = 256
 root_path_data = "Data/img_train_shape"
 root_path_labels = "Data/img_train_skeleton_grayscale"
 
-# transform = transforms.Compose([
-#	transforms.Resize((img_size,img_size)),
-#	transforms.ToTensor()
-# ])
 
 
 def get_training_data():
+    file_list = os.listdir(root_path_data)
 
-    dataset = ImageDataset(root_path_data, root_path_labels)
+    trn_list, vld_list = train_val_split(file_list)
 
-    return dataset
+    trn_dataset = ImageDataset(trn_list)
+    vld_dataset = ImageDataset(trn_list)
+
+    return trn_dataset, vld_dataset
 
 # Input: a list of all filenames
 # Output: one list with filenames for training and another for validation
@@ -87,10 +87,10 @@ def get_random_transform(p_padding=0.5, p_vflip=0.5, p_hflip=0.5, p_rotate=0.5):
 # Takes the directory to the input and output files.
 # Requires the input and output files to have the same names.
 class ImageDataset(torch.utils.data.Dataset):
-    def __init__(self, train_directory, label_directory):
-        self.trn_dir = train_directory
-        self.lbl_dir = label_directory
-        self.file_list = os.listdir(train_directory)
+    def __init__(self, file_list):
+        self.trn_dir = root_path_data
+        self.lbl_dir = root_path_labels
+        self.file_list = file_list
         # self.file_list.remove(".DS_Store")
 
     def __getitem__(self, idx):
