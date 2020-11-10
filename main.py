@@ -13,7 +13,7 @@ import numpy as np
 from ann import *
 from loss import *
 from data_manager import *
-from eval import compute_metrics
+from eval import compute_metrics, formalize_skeleton
 
 
 
@@ -48,10 +48,11 @@ optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate)
 
 
 for epoch in range(num_epochs):
-	t1 = time()
+	t1 = time() # Get starting time of epoch
 
+
+	# Train the network on the training data
 	loss_sum = 0
-
 	for i, (data, labels) in enumerate(trn_loader):
 		# Load data into GPU using cuda
 		data = data.cuda()
@@ -61,27 +62,31 @@ for epoch in range(num_epochs):
 		optimizer.zero_grad()
 		outputs = net(data)
 
+		# Calculate loss
 		loss = criterion(outputs, labels)
+
+		# Update the wights of the network
 		loss.backward()
 		optimizer.step()
 
 		loss_sum += loss
 
-
+	# Test the network on the validation data
 	f1_total = 0
 	total = 0
 	for i, (data, labels) in enumerate(vld_loader):
 		data = data.cuda()
-		outputs = net(data).detach() > 0.5
+		outputs = net(data).detach()
 
-		pre, rec, f1 = compute_metrics(labels.numpy(), outputs.cpu().numpy())
+		pre, rec, f1 = compute_metrics(labels, outputs.cpu())
 
 		f1_total += f1
 		total += 1
 
 	f1_mean = f1_total / total
 
-	t2 = time()
+
+	t2 = time() # Get ending time of epoch
 	print("Epoch time : %0.3f m \t Loss : %0.3f \t F1 mean : %0.3f" % ( (t2-t1)/60 , loss_sum , f1_mean))
 
 	torch.save(net, "skeleton_net.pt")
