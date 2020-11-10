@@ -11,7 +11,8 @@ import random
 
 
 img_size = 256
-
+root_path_data = "Data/img_train_shape"
+root_path_labels = "Data/img_train_skeleton_grayscale"
 
 # transform = transforms.Compose([
 #	transforms.Resize((img_size,img_size)),
@@ -21,7 +22,7 @@ img_size = 256
 
 def get_training_data():
 
-    dataset = ImageDataset("Data/img_train_shape", "Data/img_train_skeleton_grayscale")
+    dataset = ImageDataset(root_path_data, root_path_labels)
 
     return dataset
 
