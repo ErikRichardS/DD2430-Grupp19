@@ -107,7 +107,7 @@ class U_Net(nn.Module):
 		self.decoder5 = UpsamplingBlock(64, 32, 32)
 
 		self.output_layer = nn.Sequential(
-			nn.Conv2d(32, 3, kernel_size=1),
+			nn.Conv2d(32, 1, kernel_size=1),
 			nn.Sigmoid()
 		)
 

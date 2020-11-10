@@ -21,7 +21,7 @@ img_size = 256
 
 def get_training_data():
 
-    dataset = ImageDataset("Data/img_train_shape", "Data/img_train_skeleton")
+    dataset = ImageDataset("Data/img_train_shape", "Data/img_train_skeleton_grayscale")
 
     return dataset
 

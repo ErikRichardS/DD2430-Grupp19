@@ -37,7 +37,7 @@ vld_dataset = None # Validation data
 
 # Loaders handle shufflings and splitting data into batches
 trn_loader = torch.utils.data.DataLoader(trn_dataset, batch_size=batch_size, shuffle=True)
-#vld_loader = torch.utils.data.DataLoader(vld_dataset, batch_size=batch_size)
+vld_loader = torch.utils.data.DataLoader(trn_dataset, batch_size=1)
 
 
 # Criterion calculates the error/loss of the output
@@ -68,7 +68,7 @@ for epoch in range(num_epochs):
 		loss_sum += loss
 
 
-	for i, (data, labels) in enumerate(trn_loader):
+	for i, (data, labels) in enumerate(vld_loader):
 		data = data.cuda()
 		outputs = net(data).detach()
 
