@@ -13,7 +13,7 @@ import numpy as np
 from ann import *
 from loss import *
 from data_manager import *
-
+from eval import compute_metrics
 
 
 
@@ -66,6 +66,16 @@ for epoch in range(num_epochs):
 		optimizer.step()
 
 		loss_sum += loss
+
+
+	for i, (data, labels) in enumerate(trn_loader):
+		data = data.cuda()
+		outputs = net(data).detach()
+
+		pre, rec, f1 = compute_metrics(labels.numpy(), outputs.cpu().numpy())
+
+		print(f1)
+
 
 	t2 = time()
 	print("Epoch time : %0.3f m \t Loss : %0.3f" % ( (t2-t1)/60 , loss_sum ))
