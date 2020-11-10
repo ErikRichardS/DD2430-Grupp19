@@ -9,6 +9,9 @@ import os
 from PIL import Image
 import random
 
+from sklearn.utils import shuffle
+import numpy as np
+
 
 img_size = 256
 root_path_data = "Data/img_train_shape"
@@ -26,15 +29,24 @@ def get_training_data():
 
     return dataset
 
+# Input: a list of all filenames
+# Output: one list with filenames for training and another for validation
+def train_val_split(file_list):
+    # random shuffle the filenames
+    file_list = shuffle(file_list)
 
-def train_val_split(data, labels):
-    # Amount of validation data, e.g 0.1 = 10%
-    validation_split = 0.1
-
-    x_train, x_val, y_train, y_val = train_test_split(
-        data, labels, test_size=validation_split, random_state=1)
-
-    return [x_train, y_train], [x_val, y_val]
+    # amount of validation data, e.g 0.1 = 10%
+    val_split = 0.1
+    # amount of training data
+    train_split = 1-val_split
+    
+    # split into a train and validation set
+    n = len(file_list)
+    split_at = int(np.floor(n*train_split))
+    train = file_list[:split_at]   
+    val = file_list[split_at:]  
+            
+    return train, val
 
 
 def get_random_transform(p_padding=0.5, p_vflip=0.5, p_hflip=0.5, p_rotate=0.5):
