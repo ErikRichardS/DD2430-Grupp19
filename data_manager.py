@@ -18,34 +18,35 @@ root_path_data = "Data/img_train_shape"
 root_path_labels = "Data/img_train_skeleton_grayscale"
 
 
-
 def get_training_data():
     file_list = os.listdir(root_path_data)
 
     trn_list, vld_list = train_val_split(file_list)
 
     trn_dataset = ImageDataset(trn_list)
-    vld_dataset = ImageDataset(trn_list)
+    vld_dataset = ImageDataset(vld_list)
 
     return trn_dataset, vld_dataset
 
 # Input: a list of all filenames
 # Output: one list with filenames for training and another for validation
+
+
 def train_val_split(file_list):
     # random shuffle the filenames
-    file_list = shuffle(file_list)
+    file_list = shuffle(file_list, random_state=1)
 
     # amount of validation data, e.g 0.1 = 10%
     val_split = 0.1
     # amount of training data
     train_split = 1-val_split
-    
+
     # split into a train and validation set
     n = len(file_list)
     split_at = int(np.floor(n*train_split))
-    train = file_list[:split_at]   
-    val = file_list[split_at:]  
-            
+    train = file_list[:split_at]
+    val = file_list[split_at:]
+
     return train, val
 
 
@@ -59,7 +60,6 @@ def get_random_transform(p_padding=0.5, p_vflip=0.5, p_hflip=0.5, p_rotate=0.5):
 
     def rand_int():
         return random.randint(1, 20)
-
 
     if padding:
         padding_tuple = (rand_int(), rand_int(), rand_int(), rand_int())
