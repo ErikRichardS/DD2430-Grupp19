@@ -60,7 +60,6 @@ def get_random_transform(p_padding=0.5, p_vflip=0.5, p_hflip=0.5, p_rotate=0.5):
     def rand_int():
         return random.randint(1, 20)
 
-    #transform_list.append( transforms.Resize((img_size,img_size)) )
 
     if padding:
         padding_tuple = (rand_int(), rand_int(), rand_int(), rand_int())

@@ -30,7 +30,7 @@ learning_rate = 1e-4
 learning_decay = 0.9
 
 
-net = U_Net()
+net = U_Net() # torch.load("skeleton_net.pt")
 trn_dataset, vld_dataset = get_training_data() # Training and validation data
 
 
@@ -46,10 +46,9 @@ criterion = FocalLoss() # nn.BCELoss()
 optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate) 
 
 
-
+f1_best = 0
 for epoch in range(num_epochs):
 	t1 = time() # Get starting time of epoch
-
 
 	# Train the network on the training data
 	loss_sum = 0
@@ -69,6 +68,7 @@ for epoch in range(num_epochs):
 		loss.backward()
 		optimizer.step()
 
+		# Add loss to total loss of epoch
 		loss_sum += loss
 
 	# Test the network on the validation data
@@ -76,8 +76,11 @@ for epoch in range(num_epochs):
 	total = 0
 	for i, (data, labels) in enumerate(vld_loader):
 		data = data.cuda()
-		outputs = net(data).detach()
 
+		# Detach output tensor so memory is not filled with possible gradient calculations
+		outputs = net(data).detach() 
+
+		# Calculate precision, recall, and f1-score
 		pre, rec, f1 = compute_metrics(labels, outputs.cpu())
 
 		f1_total += f1
@@ -89,4 +92,7 @@ for epoch in range(num_epochs):
 	t2 = time() # Get ending time of epoch
 	print("Epoch time : %0.3f m \t Loss : %0.3f \t F1 mean : %0.3f" % ( (t2-t1)/60 , loss_sum , f1_mean))
 
-	torch.save(net, "skeleton_net.pt")
+	# If new f1 score is the best so far, save network
+	if f1_best < f1_mean:
+		torch.save(net, "skeleton_net.pt")
+		f1_best = f1_mean
