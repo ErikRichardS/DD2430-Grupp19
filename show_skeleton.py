@@ -15,9 +15,9 @@ tensor_to_image = transforms.ToPILImage()
 def show_image_skeleton(img, net):
 	data = torch.unsqueeze( image_to_tensor(img), 0 ).cuda()
 
-	output = torch.squeeze( net(data).detach().cpu() )
+	output = formalize_skeleton( torch.squeeze( net(data).detach().cpu() ) )
 
-	output_image = formalize_skeleton( tensor_to_image(output) )
+	output_image = tensor_to_image( output.float() )
 
 
 	output_image.show()
