@@ -20,8 +20,8 @@ from eval import compute_metrics, formalize_skeleton
 num_epochs = 100
 batch_size = 4
 learning_rate = 1e-4
-#weight_decay = 1e-7
-learning_decay = 0.9
+weight_decay = 1e-7
+learning_decay = 0.95
 
 
 net = U_Net()  # torch.load("skeleton_net.pt")
@@ -29,15 +29,14 @@ trn_dataset, vld_dataset = get_training_data()  # Training and validation data
 
 
 # Loaders handle shufflings and splitting data into batches
-trn_loader = torch.utils.data.DataLoader(
-    trn_dataset, batch_size=batch_size, shuffle=True)
+trn_loader = torch.utils.data.DataLoader(trn_dataset, batch_size=batch_size, shuffle=True)
 vld_loader = torch.utils.data.DataLoader(vld_dataset, batch_size=1)
 
 
 # Criterion calculates the error/loss of the output
 # Optimizer does the backprop to adjust the weights of the NN
 criterion = FocalLoss()  # nn.BCELoss()
-optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate)
+optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate, weight_decay=weight_decay)
 
 
 f1_best = 0
@@ -85,6 +84,9 @@ for epoch in range(num_epochs):
     t2 = time()  # Get ending time of epoch
     print("Epoch time : %0.3f m \t Loss : %0.3f \t F1 mean : %0.3f" %
           ((t2-t1)/60, loss_sum, f1_mean))
+
+    learning_rate *= learning_decay
+    torch.optim.Adam(net.parameters(), lr=learning_rate, weight_decay=weight_decay)
 
     # If new f1 score is the best so far, save network
     if f1_best < f1_mean:
