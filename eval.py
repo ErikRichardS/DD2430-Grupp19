@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from sklearn.metrics import confusion_matrix
 
-pixel_threshold = 0.5
+pixel_threshold = 0.75
 
 def formalize_skeleton(data):
 	return data > pixel_threshold

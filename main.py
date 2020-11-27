@@ -15,6 +15,12 @@ from loss import *
 from data_manager import *
 from eval import compute_metrics, formalize_skeleton
 
+print("Write random seed for splitting data")
+random_seed = int(input())
+
+print("Write file name for saving the network")
+ann_name = input()
+
 
 # Hyper Parameters
 num_epochs = 100
@@ -25,7 +31,7 @@ learning_decay = 0.95
 
 
 net = U_Net()  # torch.load("skeleton_net.pt")
-trn_dataset, vld_dataset = get_training_data()  # Training and validation data
+trn_dataset, vld_dataset = get_training_data(seed=random_seed)  # Training and validation data
 
 
 # Loaders handle shufflings and splitting data into batches
@@ -38,7 +44,7 @@ vld_loader = torch.utils.data.DataLoader(vld_dataset, batch_size=1)
 criterion = FocalLoss()  # nn.BCELoss()
 optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate, weight_decay=weight_decay)
 
-
+print("Training begins...")
 f1_best = 0
 for epoch in range(num_epochs):
     t1 = time()  # Get starting time of epoch
@@ -90,5 +96,5 @@ for epoch in range(num_epochs):
 
     # If new f1 score is the best so far, save network
     if f1_best < f1_mean:
-        torch.save(net, "skeleton_net.pt")
+        torch.save(net, ann_name+".pt")
         f1_best = f1_mean

@@ -18,10 +18,10 @@ root_path_data = "Data/img_train_shape"
 root_path_labels = "Data/img_train_skeleton_grayscale"
 
 
-def get_training_data():
+def get_training_data(seed=1):
     file_list = os.listdir(root_path_data)
 
-    trn_list, vld_list = train_val_split(file_list)
+    trn_list, vld_list = train_val_split(file_list, r_seed=seed)
 
     trn_dataset = ImageDataset(trn_list)
     vld_dataset = ImageDataset(vld_list)
@@ -32,9 +32,9 @@ def get_training_data():
 # Output: one list with filenames for training and another for validation
 
 
-def train_val_split(file_list):
+def train_val_split(file_list, r_seed=1):
     # random shuffle the filenames
-    file_list = shuffle(file_list, random_state=1)
+    file_list = shuffle(file_list, random_state=r_seed)
 
     # amount of validation data, e.g 0.1 = 10%
     val_split = 0.1
