@@ -21,33 +21,36 @@ root_path_labels = "Data/img_train_skeleton_grayscale"
 def get_training_data(seed=1):
     file_list = os.listdir(root_path_data)
 
-    trn_list, vld_list = train_val_split(file_list, r_seed=seed)
+    trn_list, vld_list, tst_list = train_val_split(file_list, r_seed=seed)
+
+    print(tst_list)
 
     trn_dataset = ImageDataset(trn_list)
     vld_dataset = ImageDataset(vld_list)
+    tst_dataset = ImageDataset(tst_list)
 
-    return trn_dataset, vld_dataset
+    return trn_dataset, vld_dataset, tst_dataset
 
 # Input: a list of all filenames
 # Output: one list with filenames for training and another for validation
 
 
 def train_val_split(file_list, r_seed=1):
-    # random shuffle the filenames
-    file_list = shuffle(file_list, random_state=r_seed)
 
-    # amount of validation data, e.g 0.1 = 10%
-    val_split = 0.1
-    # amount of training data
-    train_split = 1-val_split
+    train_split = int( len(file_list) * 0.8 )
+    test_split  = int( len(file_list) * 0.9 )
 
-    # split into a train and validation set
-    n = len(file_list)
-    split_at = int(np.floor(n*train_split))
-    train = file_list[:split_at]
-    val = file_list[split_at:]
+    # Pick a fixed random test set
+    file_list = shuffle(file_list, random_state=1)
+    test = file_list[test_split:]
 
-    return train, val
+    # Randomly split training and validation data
+    # based on random seed
+    file_list = shuffle(file_list[:test_split], random_state=r_seed)
+    train = file_list[:train_split]
+    val   = file_list[train_split:]
+
+    return train, val, test
 
 
 def get_random_transform(p_padding=0.5, p_vflip=0.5, p_hflip=0.5, p_rotate=0.5):
