@@ -9,12 +9,12 @@ def formalize_skeleton(data):
 
 
 def compute_metrics(y_true, y_pred):
-	y_true = y_true.numpy()
-	y_pred = formalize_skeleton(y_pred).numpy()
+	y_true = y_true.view(-1).numpy()
+	y_pred = formalize_skeleton(y_pred.view(-1)).numpy()
 
 
-	y_true = np.array(y_true).reshape((256**2,))
-	y_pred = np.array(y_pred).reshape((256**2,))
+	#y_true = np.array(y_true).reshape((256**2,))
+	#y_pred = np.array(y_pred).reshape((256**2,))
 
 	tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
 

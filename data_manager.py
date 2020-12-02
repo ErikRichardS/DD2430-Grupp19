@@ -23,8 +23,6 @@ def get_training_data(seed=1):
 
     trn_list, vld_list, tst_list = train_val_split(file_list, r_seed=seed)
 
-    print(tst_list)
-
     trn_dataset = ImageDataset(trn_list)
     vld_dataset = ImageDataset(vld_list)
     tst_dataset = ImageDataset(tst_list)

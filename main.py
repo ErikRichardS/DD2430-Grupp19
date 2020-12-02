@@ -36,7 +36,7 @@ trn_dataset, vld_dataset, tst_dataset = get_training_data(seed=random_seed)  # T
 
 # Loaders handle shufflings and splitting data into batches
 trn_loader = torch.utils.data.DataLoader(trn_dataset, batch_size=batch_size, shuffle=True)
-vld_loader = torch.utils.data.DataLoader(vld_dataset, batch_size=1)
+vld_loader = torch.utils.data.DataLoader(vld_dataset, batch_size=batch_size)
 tst_loader = torch.utils.data.DataLoader(tst_dataset, batch_size=1)
 
 
