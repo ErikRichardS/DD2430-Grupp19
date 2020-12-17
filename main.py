@@ -89,8 +89,8 @@ for epoch in range(num_epochs):
     f1_mean = f1_total / total
 
     t2 = time()  # Get ending time of epoch
-    print("Epoch time : %0.3f m \t Loss : %0.3f \t F1 mean : %0.3f" %
-          ((t2-t1)/60, loss_sum, f1_mean))
+    print("Epoch : %d \t Time : %0.3f m \t Loss : %0.3f \t F1 mean : %0.3f" %
+          (epoch, (t2-t1)/60, loss_sum, f1_mean))
 
     learning_rate *= learning_decay
     torch.optim.Adam(net.parameters(), lr=learning_rate, weight_decay=weight_decay)
